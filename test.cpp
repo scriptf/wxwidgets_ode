@@ -27,6 +27,8 @@
 
 class MyPanel : public wxPanel
 {
+    double scale = 10;
+    double zoom = 1.0;
     const double PI = acos(-1);
 
     //double mu = 0.2;
@@ -100,11 +102,11 @@ public:
     {
         // 初期値
         t = newT = 0.0;
-        kk = 0.015;
-        B = 0.45;
-        x = newX = 1.5;
-        y = newY =  0;
-        
+        kk = 0.1;
+        B = 13.388;
+        x = newX = 4;
+        y = newY = 0;
+
         divider = 180; // 2PIを割る数
         dt = 2.0 * M_PI / double(divider);
         counter = 0;
@@ -125,41 +127,54 @@ public:
         wxPaintDC *dc = new wxPaintDC(this);
         dc->SetPen(wxPen(wxColour("red"), 1, wxSOLID)); // Color of pen
 
+        wxSize size = wxWindow::GetSize();
 
-        runge();
+        std::cerr << "width=" << size.x << std::endl;
+        std::cerr << "height=" << size.y << std::endl;
+
         //dc.DrawLine(x, points[x], x + 1, points[x + 1]);
         //dc.DrawLine(x, y, newX, newY);
-        
+
+        std::cerr << "pointsX=" << pointsX.size() << std::endl;
+
+        //dc->DrawLine(pointsX[0],pointsY[0], pointsNewX[0], pointsNewY[0]);
 
         for (int i = 0; i < int(pointsX.size()) - 1; i++)
         {
             //dc.DrawLine(pointsX[i],pointsY[i], pointsNewX[i], pointsNewY[i]);
-            dc->DrawLine(pointsX[i],pointsY[i], pointsNewX[i], pointsNewY[i]);
+            dc->DrawLine((pointsX[i])*scale + size.x / 2, -(pointsY[i])*scale  + size.y / 2,
+                         (pointsNewX[i])*scale + size.x / 2, -(pointsNewY[i])*scale  + size.y / 2);
         }
-/*
+
+        /*
         for (int x = 0; x < int(points.size()) - 1; ++x)
         {
             dc.DrawLine(x, points[x], x + 1, points[x + 1]);
         }
 */
-
     }
 
     void myOnTimer(wxTimerEvent &event)
     {
+        // 計算の処理はこちらに書いたほうが描画が早い
+        runge();
+
         //int value = wxGetMouseState().GetY() - GetScreenPosition().y;
-        int value = int(y*100+150);
+        int value = int(y * 100 + 150);
 
         //std::cerr << "value=" << value << std::endl;
-        pointsX.push_back(int(x*100+150));
-        pointsY.push_back(int(y*100+150));
-        pointsNewX.push_back(int(newX*100+150));
-        pointsNewY.push_back(int(newY*100+150));
-        
-        points.push_back(value);
-        if (points.size() > 640)
+        pointsX.push_back(x);
+        pointsY.push_back(y);
+        pointsNewX.push_back(newX);
+        pointsNewY.push_back(newY);
+
+        // 描画する点の数を制限する
+        if (pointsX.size() > 640)
         {
-            points.pop_front();
+            pointsX.pop_front();
+            pointsNewX.pop_front();
+            pointsY.pop_front();
+            pointsNewY.pop_front();
         }
         // 再描画する
         Refresh();
@@ -167,11 +182,11 @@ public:
 
 private:
     wxTimer timer;
-    std::deque<int> points;
-    std::deque<int> pointsX;
-    std::deque<int> pointsY;
-    std::deque<int> pointsNewX;
-    std::deque<int> pointsNewY;
+    //std::deque<int> points;
+    std::deque<double> pointsX;
+    std::deque<double> pointsY;
+    std::deque<double> pointsNewX;
+    std::deque<double> pointsNewY;
 };
 
 class MyApp : public wxApp
@@ -182,7 +197,7 @@ public:
         wxFrame *frame = new wxFrame(NULL, wxID_ANY, "Hello, world!",
                                      wxDefaultPosition, wxSize(640, 480));
         MyPanel *panel = new MyPanel(frame);
-        panel->SetBackgroundColour(wxColour(* wxWHITE));
+        panel->SetBackgroundColour(wxColour(*wxWHITE));
         frame->Show();
         return true;
     }

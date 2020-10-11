@@ -14,8 +14,8 @@ make
 # Shortcuts
 
 ```
-zoom in: 1
-zoom out: 2
+zoom in: z
+zoom out: shift + z
 
 move left: left
 move right: left

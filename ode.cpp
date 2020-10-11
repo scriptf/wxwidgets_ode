@@ -14,6 +14,8 @@
 #include "wx/filedlg.h"
 #include "wx/stockitem.h"
 #include "wx/dcbuffer.h"
+#include <wx/kbdstate.h>
+
 
 #include <deque>
 ////////////////////////
@@ -213,13 +215,19 @@ MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
 
 void MyFrame::OnKeyDown(wxKeyEvent &event)
 {
-    //    wxMessageBox(wxString::Format("KeyDown: %i\n", (int)event.GetKeyCode()));
-    if (wxGetKeyState(wxKeyCode('1')))
+    if (event.ShiftDown() && wxGetKeyState(wxKeyCode('z'))) // zoom out
     {
-        //wxMessageBox(wxString::Format("KeyDown: %i\n", (int)event.GetKeyCode()));
+        mainPanel->zoom = mainPanel->zoom - 0.1;
+    }
+    else if (wxGetKeyState(wxKeyCode('z')))                 // zoom in
+    {
+        mainPanel->zoom = mainPanel->zoom + 0.1;
+    }   
+    else if (wxGetKeyState(wxKeyCode('1')))
+    {
         mainPanel->zoom = mainPanel->zoom + 0.1;
     }
-    else if (wxGetKeyState(wxKeyCode('2')))   
+    else if (wxGetKeyState(wxKeyCode('2')))
     {
         //wxMessageBox(wxString::Format("KeyDown: %i\n", (int)event.GetKeyCode()));
         mainPanel->zoom = mainPanel->zoom - 0.1;
@@ -246,9 +254,6 @@ void MyFrame::OnKeyDown(wxKeyEvent &event)
         mainPanel->addY = 0;
         mainPanel->zoom = 1.0;
     }
-
-
-
 
     event.Skip();
 }

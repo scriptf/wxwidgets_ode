@@ -1,5 +1,7 @@
 ![](1.png)
 
+# Build and Execute
+
 ```
 mkdir build
 cd build
@@ -8,7 +10,7 @@ make
 ./ode
 ```
 
-
+# Shortcuts
 
 ```
 zoom in: 1

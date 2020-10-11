@@ -259,7 +259,7 @@ public:
     virtual bool OnInit()
     {
         //        MyFrame *frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(450, 340));
-        MyFrame *frame = new MyFrame("Hello World", wxDefaultPosition, wxSize(640, 480));
+        MyFrame *frame = new MyFrame("ODE", wxDefaultPosition, wxSize(640, 480));
         /*
         MyPanel *panel = new MyPanel(frame);
         panel->SetBackgroundColour(wxColour(*wxWHITE));

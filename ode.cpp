@@ -23,7 +23,6 @@
 #include <math.h>
 #include <bits/stdc++.h>
 
-// 軌跡の長さ
 
 class MyPanel : public wxPanel
 {
@@ -96,6 +95,7 @@ class MyPanel : public wxPanel
     }
 
 public:
+    //MyPanel(wxFrame *parent)
     MyPanel(wxFrame *parent)
         : wxPanel(parent),
           timer(this)
@@ -142,8 +142,8 @@ public:
         for (int i = 0; i < int(pointsX.size()) - 1; i++)
         {
             //dc.DrawLine(pointsX[i],pointsY[i], pointsNewX[i], pointsNewY[i]);
-            dc->DrawLine((pointsX[i])*scale + size.x / 2, -(pointsY[i])*scale  + size.y / 2,
-                         (pointsNewX[i])*scale + size.x / 2, -(pointsNewY[i])*scale  + size.y / 2);
+            dc->DrawLine((pointsX[i]) * scale * zoom + size.x / 2, -(pointsY[i]) * scale * zoom + size.y / 2,
+                         (pointsNewX[i]) * scale * zoom + size.x / 2, -(pointsNewY[i]) * scale * zoom + size.y / 2);
         }
 
         /*
@@ -189,18 +189,74 @@ private:
     std::deque<double> pointsNewY;
 };
 
+
+
+class MyFrame : public wxFrame
+{
+public:
+    MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
+
+    void OnKeyDown(wxKeyEvent &event);
+};
+
+
+MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
+    : wxFrame((wxFrame *)NULL, -1, title, pos, size)
+{   
+    //MyPanel *mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
+    MyPanel *mainPanel = new MyPanel(this);
+
+
+    //wxPanel *mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
+
+    mainPanel->SetBackgroundColour(wxColour(*wxWHITE));
+    mainPanel->Bind(wxEVT_CHAR_HOOK, &MyFrame::OnKeyDown, this);
+}
+
+void MyFrame::OnKeyDown(wxKeyEvent &event)
+{
+    wxMessageBox(wxString::Format("KeyDown: %i\n", (int)event.GetKeyCode()));
+    event.Skip();
+}
+
+
+
+
+
+
+
 class MyApp : public wxApp
 {
 public:
     virtual bool OnInit()
     {
-        wxFrame *frame = new wxFrame(NULL, wxID_ANY, "Hello, world!",
-                                     wxDefaultPosition, wxSize(640, 480));
+//        MyFrame *frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(450, 340));
+        MyFrame *frame = new MyFrame("Hello World", wxDefaultPosition, wxSize(640, 480));
+        /*
         MyPanel *panel = new MyPanel(frame);
         panel->SetBackgroundColour(wxColour(*wxWHITE));
+        */
+        
+        
+        
+        frame->Show(TRUE);
+        SetTopWindow(frame);
+        return TRUE;
+
+        //MyFrame *frame = new MyFrame(NULL, wxID_ANY, "Hello, world!",
+        //                             wxDefaultPosition, wxSize(640, 480));
+
+        /*
+        MyFrame *frame = new wxFrame(NULL, wxID_ANY, "Hello, world!",
+                                     wxDefaultPosition, wxSize(640, 480));
+        //MyPanel *panel = new MyPanel(frame);
+        //panel->SetBackgroundColour(wxColour(*wxWHITE));
         frame->Show();
         return true;
+*/
     }
 };
 
-wxIMPLEMENT_APP(MyApp);
+IMPLEMENT_APP(MyApp)
+
+//wxIMPLEMENT_APP(MyApp);

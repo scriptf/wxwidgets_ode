@@ -23,9 +23,11 @@
 #include <math.h>
 #include <bits/stdc++.h>
 
-
 class MyPanel : public wxPanel
 {
+public:
+    int addX = 0;
+    int addY = 0;
     double scale = 10;
     double zoom = 1.0;
     const double PI = acos(-1);
@@ -94,7 +96,6 @@ class MyPanel : public wxPanel
         return 0;
     }
 
-public:
     //MyPanel(wxFrame *parent)
     MyPanel(wxFrame *parent)
         : wxPanel(parent),
@@ -142,8 +143,8 @@ public:
         for (int i = 0; i < int(pointsX.size()) - 1; i++)
         {
             //dc.DrawLine(pointsX[i],pointsY[i], pointsNewX[i], pointsNewY[i]);
-            dc->DrawLine((pointsX[i]) * scale * zoom + size.x / 2, -(pointsY[i]) * scale * zoom + size.y / 2,
-                         (pointsNewX[i]) * scale * zoom + size.x / 2, -(pointsNewY[i]) * scale * zoom + size.y / 2);
+            dc->DrawLine((pointsX[i]) * scale * zoom + size.x / 2 + addX, -(pointsY[i]) * scale * zoom + size.y / 2 + addY,
+                         (pointsNewX[i]) * scale * zoom + size.x / 2 + addX, -(pointsNewY[i]) * scale * zoom + size.y / 2 + addY);
         }
 
         /*
@@ -169,7 +170,7 @@ public:
         pointsNewY.push_back(newY);
 
         // 描画する点の数を制限する
-        if (pointsX.size() > 640)
+        if (pointsX.size() > 500)
         {
             pointsX.pop_front();
             pointsNewX.pop_front();
@@ -189,23 +190,20 @@ private:
     std::deque<double> pointsNewY;
 };
 
-
-
 class MyFrame : public wxFrame
 {
 public:
+    MyPanel *mainPanel;
     MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
 
     void OnKeyDown(wxKeyEvent &event);
 };
 
-
 MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
     : wxFrame((wxFrame *)NULL, -1, title, pos, size)
-{   
+{
     //MyPanel *mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
-    MyPanel *mainPanel = new MyPanel(this);
-
+    mainPanel = new MyPanel(this);
 
     //wxPanel *mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
 
@@ -215,30 +213,58 @@ MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
 
 void MyFrame::OnKeyDown(wxKeyEvent &event)
 {
-    wxMessageBox(wxString::Format("KeyDown: %i\n", (int)event.GetKeyCode()));
+    //    wxMessageBox(wxString::Format("KeyDown: %i\n", (int)event.GetKeyCode()));
+    if (wxGetKeyState(wxKeyCode('1')))
+    {
+        //wxMessageBox(wxString::Format("KeyDown: %i\n", (int)event.GetKeyCode()));
+        mainPanel->zoom = mainPanel->zoom + 0.1;
+    }
+    else if (wxGetKeyState(wxKeyCode('2')))   
+    {
+        //wxMessageBox(wxString::Format("KeyDown: %i\n", (int)event.GetKeyCode()));
+        mainPanel->zoom = mainPanel->zoom - 0.1;
+    }
+    else if (wxGetKeyState(WXK_RIGHT))
+    {
+        mainPanel->addX = mainPanel->addX + 1;
+    }
+    else if (wxGetKeyState(WXK_LEFT))
+    {
+        mainPanel->addX = mainPanel->addX - 1;
+    }
+    else if (wxGetKeyState(WXK_UP))
+    {
+        mainPanel->addY = mainPanel->addY - 1;
+    }
+    else if (wxGetKeyState(WXK_DOWN))
+    {
+        mainPanel->addY = mainPanel->addY + 1;
+    }
+    else if (wxGetKeyState(wxKeyCode('d'))) // default position
+    {
+        mainPanel->addX = 0;
+        mainPanel->addY = 0;
+        mainPanel->zoom = 1.0;
+    }
+
+
+
+
     event.Skip();
 }
-
-
-
-
-
-
 
 class MyApp : public wxApp
 {
 public:
     virtual bool OnInit()
     {
-//        MyFrame *frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(450, 340));
+        //        MyFrame *frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(450, 340));
         MyFrame *frame = new MyFrame("Hello World", wxDefaultPosition, wxSize(640, 480));
         /*
         MyPanel *panel = new MyPanel(frame);
         panel->SetBackgroundColour(wxColour(*wxWHITE));
         */
-        
-        
-        
+
         frame->Show(TRUE);
         SetTopWindow(frame);
         return TRUE;

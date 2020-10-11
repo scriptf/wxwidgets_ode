@@ -16,7 +16,6 @@
 #include "wx/dcbuffer.h"
 #include <wx/kbdstate.h>
 
-
 #include <deque>
 ////////////////////////
 #include <iostream>
@@ -95,6 +94,12 @@ public:
         newY = y + h;
         counter++;
 
+        if (counter > divider)
+        {
+            counter = 0;
+            t = newT = 0.0;
+        }
+
         return 0;
     }
 
@@ -145,9 +150,65 @@ public:
         for (int i = 0; i < int(pointsX.size()) - 1; i++)
         {
             //dc.DrawLine(pointsX[i],pointsY[i], pointsNewX[i], pointsNewY[i]);
-            dc->DrawLine((pointsX[i]) * scale * zoom + size.x / 2 + addX, -(pointsY[i]) * scale * zoom + size.y / 2 + addY,
-                         (pointsNewX[i]) * scale * zoom + size.x / 2 + addX, -(pointsNewY[i]) * scale * zoom + size.y / 2 + addY);
+            dc->DrawLine(
+                (pointsX[i]) * scale * zoom + size.x / 2 + addX,
+                -(pointsY[i]) * scale * zoom + size.y / 2 + addY,
+                (pointsNewX[i]) * scale * zoom + size.x / 2 + addX,
+                -(pointsNewY[i]) * scale * zoom + size.y / 2 + addY);
+
+            /*
+            if (newT = 0.0)
+            {
+                dc->SetPen(wxPen(wxColour("blue"), 5, wxSOLID)); // Color of pen
+                dc->DrawLine(
+                    (pointsX[i]) * scale * zoom + size.x / 2 + addX,
+                    -(pointsY[i]) * scale * zoom + size.y / 2 + addY,
+                    (pointsX[i]) * scale * zoom + size.x / 2 + addX,
+                    -(pointsY[i]) * scale * zoom + size.y / 2 + addY);
+            }
+            else
+            {
+                dc->SetPen(wxPen(wxColour("red"), 1, wxSOLID)); // Color of pen
+            }
+*/
         }
+
+/*
+        if (t = 0.0)
+        {
+            dc->SetPen(wxPen(wxColour("blue"), 5, wxSOLID)); // Color of pen
+            dc->DrawLine(
+                (pointsX.back()) * scale * zoom + size.x / 2 + addX,
+                -(pointsY.back()) * scale * zoom + size.y / 2 + addY,
+                (pointsX.back()) * scale * zoom + size.x / 2 + addX,
+                -(pointsY.back()) * scale * zoom + size.y / 2 + addY);
+        }
+*/
+
+        /*
+        if (newT = 0.0)
+        {
+            dc->SetPen(wxPen(wxColour("blue"), 5, wxSOLID)); // Color of pen
+            dc->DrawLine(
+                (pointsX.back()) * scale * zoom + size.x / 2 + addX,
+                -(pointsY.back()) * scale * zoom + size.y / 2 + addY,
+                (pointsX.back()) * scale * zoom + size.x / 2 + addX,
+                -(pointsY.back()) * scale * zoom + size.y / 2 + addY);
+        }
+        else
+        {
+            dc->SetPen(wxPen(wxColour("red"), 1, wxSOLID)); // Color of pen
+        }
+        */
+        // strobo
+        /*
+        if (counter == 0)
+        {
+            dc->SetPen(wxPen(wxColour("blue"), 5, wxSOLID)); // Color of pen
+            dc->DrawLine((pointsX[i]) * scale * zoom + size.x / 2 + addX, -(pointsY[i]) * scale * zoom + size.y / 2 + addY,
+                         (pointsX[i]) * scale * zoom + size.x / 2 + addX, -(pointsY[i]) * scale * zoom + size.y / 2 + addY);
+        }
+        */
 
         /*
         for (int x = 0; x < int(points.size()) - 1; ++x)
@@ -180,6 +241,7 @@ public:
             pointsNewY.pop_front();
         }
         // 再描画する
+        // myOnPaint が呼ばれる?
         Refresh();
     }
 
@@ -219,10 +281,10 @@ void MyFrame::OnKeyDown(wxKeyEvent &event)
     {
         mainPanel->zoom = mainPanel->zoom - 0.1;
     }
-    else if (wxGetKeyState(wxKeyCode('z')))                 // zoom in
+    else if (wxGetKeyState(wxKeyCode('z'))) // zoom in
     {
         mainPanel->zoom = mainPanel->zoom + 0.1;
-    }   
+    }
     else if (wxGetKeyState(wxKeyCode('1')))
     {
         mainPanel->zoom = mainPanel->zoom + 0.1;
@@ -264,7 +326,8 @@ public:
     virtual bool OnInit()
     {
         //        MyFrame *frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(450, 340));
-        MyFrame *frame = new MyFrame("ODE", wxDefaultPosition, wxSize(640, 480));
+        //MyFrame *frame = new MyFrame("ODE", wxDefaultPosition, wxSize(640, 480));
+        MyFrame *frame = new MyFrame("ODE", wxDefaultPosition, wxSize(1024, 640));
         /*
         MyPanel *panel = new MyPanel(frame);
         panel->SetBackgroundColour(wxColour(*wxWHITE));

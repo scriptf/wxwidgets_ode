@@ -1,2 +1,3 @@
+- GUI controller
+- strobo
 - mouse wheel function
-- control menu

@@ -137,13 +137,9 @@ public:
 
         wxSize size = wxWindow::GetSize();
 
-        std::cerr << "width=" << size.x << std::endl;
-        std::cerr << "height=" << size.y << std::endl;
-
-        //dc.DrawLine(x, points[x], x + 1, points[x + 1]);
-        //dc.DrawLine(x, y, newX, newY);
-
-        std::cerr << "pointsX=" << pointsX.size() << std::endl;
+        // std::cerr << "width=" << size.x << std::endl;
+        // std::cerr << "height=" << size.y << std::endl;
+        // std::cerr << "pointsX=" << pointsX.size() << std::endl;
 
         //dc->DrawLine(pointsX[0],pointsY[0], pointsNewX[0], pointsNewY[0]);
 
@@ -243,6 +239,7 @@ public:
         // 再描画する
         // myOnPaint が呼ばれる?
         Refresh();
+//        Update();
     }
 
 private:

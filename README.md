@@ -2,6 +2,9 @@
 ![](1.png)
 
 # Build and Execute
+Duffing方程式のシミュレーター。
+
+Ubuntu で動作確認済み。
 
 ```
 mkdir build
